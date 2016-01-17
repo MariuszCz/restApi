@@ -1,5 +1,6 @@
 package pl.edu.uam.restapi.storage.database;
 
+import pl.edu.uam.restapi.storage.model.Auction;
 import pl.edu.uam.restapi.storage.model.Car;
 
 import java.util.Collection;
@@ -12,6 +13,8 @@ public interface CarDatabase {
     Car createCar(Car user);
 
     Car deleteCar(String id);
+
+    Collection<Car> getCarsByQueryParams(int minPrice, int maxPrice);
 
     Collection<Car> getCars();
 }

@@ -11,7 +11,9 @@ public interface AuctionDatabase {
 
     Auction createAuction(Auction auction);
 
-   Auction deleteAuction(String id);
+    Auction deleteAuction(String id);
+
+    Auction getAuctionsByQueryParams(String mark, String model, String userId);
 
     Collection<Auction> getAuctions();
 }

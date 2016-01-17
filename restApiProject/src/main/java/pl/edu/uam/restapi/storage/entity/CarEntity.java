@@ -17,8 +17,10 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "cars")
 @NamedQueries({
-        @NamedQuery(name = "cars.findAll", query = "SELECT u FROM CarEntity u")
+        @NamedQuery(name = "cars.findAll", query = "SELECT u FROM CarEntity u"),
+        @NamedQuery(name = "cars.findByParams", query = "SELECT u FROM CarEntity u WHERE price >= :minPrice  AND price <= :maxPrice " )
 })
+
 public class CarEntity {
     private static final Logger LOGGER = LoggerFactory.getLogger(CarEntity.class);
 
@@ -49,7 +51,7 @@ public class CarEntity {
     private String vinNumber;
 
     @Column(name = "price")
-    private String price;
+    private int price;
 
 
     //Lifecycle methods -- Pre/PostLoad, Pre/PostPersist...
@@ -61,7 +63,7 @@ public class CarEntity {
     public CarEntity() {
     }
 
-    public CarEntity(String make, String model, String year, String engine, String fuelType, String colour, String vinNumber, String price) {
+    public CarEntity(String make, String model, String year, String engine, String fuelType, String colour, String vinNumber, int price) {
         this.make = make;
         this.model = model;
         this.year = year;
@@ -132,11 +134,11 @@ public class CarEntity {
         this.vinNumber = vinNumber;
     }
 
-    public String getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

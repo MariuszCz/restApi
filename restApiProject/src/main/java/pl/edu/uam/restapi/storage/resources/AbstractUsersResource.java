@@ -1,6 +1,8 @@
 package pl.edu.uam.restapi.storage.resources;
 
+import com.sun.jersey.api.Responses;
 import com.wordnik.swagger.annotations.ApiOperation;
+import pl.edu.uam.restapi.dokumentacjaibledy.exceptions.ResourceException;
 import pl.edu.uam.restapi.storage.database.UserDatabase;
 import pl.edu.uam.restapi.storage.model.User;
 import pl.edu.uam.restapi.dokumentacjaibledy.exceptions.UserException;
@@ -58,19 +60,38 @@ public abstract class AbstractUsersResource {
     @ApiOperation(value = "Create user", notes = "Create user", response = User.class)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createUser(User user) {
-        User dbUser = new User(
-                "",
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getLogin(),
-                user.getPassword()
-        );
+    public Response createUser(User user) throws Exception {
 
-        User createdUser = getDatabase().createUser(dbUser);
+        if(user.getFirstName().isEmpty()) {
+            throw new ResourceException("First name is required", "Imie jest wymagane", "");
+        }
+        else if (user.getLastName().isEmpty()) {
+            throw new ResourceException("Last name is required", "Nazwisko jest wymagane", "");
+        }
+        else if (user.getLogin().isEmpty()) {
+            throw new ResourceException("Login is required", "Login jest wymagany", "");
+        }
+        else if (user.getEmail().isEmpty()) {
+            throw new ResourceException("Email is required", "Email jest wymagany", "");
+        }
+        else if (user.getPassword().isEmpty()) {
+            throw new ResourceException("Password is required", "Haslo jest wymagane", "");
+        } else {
+            User dbUser = new User(
+                        "",
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getEmail(),
+                        user.getLogin(),
+                        user.getPassword()
+                );
 
-        return Response.created(URI.create(uriInfo.getPath() + "/" + createdUser.getId())).entity(createdUser).build();
+                User createdUser = getDatabase().createUser(dbUser);
+
+                return Response.created(URI.create(uriInfo.getPath() + "/" + createdUser.getId()))
+                        .entity(createdUser).build();
+
+        }
     }
 
     @Path("/{userId}")
@@ -78,22 +99,33 @@ public abstract class AbstractUsersResource {
     @ApiOperation(value = "Update user", notes = "Create user", response = User.class)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateUser(@PathParam("userId") String userId, User user) {
+    public Response updateUser(@PathParam("userId") String userId, User user) throws Exception {
 
-        User dbUser = new User(
-                "",
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getLogin(),
-                user.getPassword()
-        );
+        if (user.getFirstName().isEmpty()) {
+            throw new ResourceException("First name is required", "Imie jest wymagane", "");
+        } else if (user.getLastName().isEmpty()) {
+            throw new ResourceException("Last name is required", "Nazwisko jest wymagane", "");
+        } else if (user.getLogin().isEmpty()) {
+            throw new ResourceException("Login is required", "Login jest wymagany", "");
+        } else if (user.getEmail().isEmpty()) {
+            throw new ResourceException("Email is required", "Email jest wymagany", "");
+        } else if (user.getPassword().isEmpty()) {
+            throw new ResourceException("Password is required", "Haslo jest wymagane", "");
+        } else {
+            User dbUser = new User(
+                    "",
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getEmail(),
+                    user.getLogin(),
+                    user.getPassword()
+            );
 
-        User updatedUser = getDatabase().updateUser(userId, dbUser);
+            User updatedUser = getDatabase().updateUser(userId, dbUser);
 
-        return Response.ok().entity(updatedUser).build();
+            return Response.ok().entity(updatedUser).build();
+        }
     }
-
     @DELETE
     @Path("/{userId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -102,6 +134,6 @@ public abstract class AbstractUsersResource {
 
         User deletedUser = getDatabase().deleteUser(userId);
 
-        return Response.ok().entity(deletedUser).build();
+        return Response.status(Response.Status.ACCEPTED).entity(deletedUser).build();
     }
 }

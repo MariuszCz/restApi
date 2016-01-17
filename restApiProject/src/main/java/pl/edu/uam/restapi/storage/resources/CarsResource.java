@@ -1,22 +1,21 @@
 package pl.edu.uam.restapi.storage.resources;
 
-import com.sun.jersey.api.client.ClientResponse;
+
 import com.wordnik.swagger.annotations.ApiOperation;
 import pl.edu.uam.restapi.storage.database.CarDatabase;
 import pl.edu.uam.restapi.storage.model.Car;
 import pl.edu.uam.restapi.dokumentacjaibledy.exceptions.UserException;
-import scala.util.parsing.combinator.testing.Str;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -40,6 +39,19 @@ public abstract class CarsResource {
     }
 
 
+    @GET
+    @Path("/query")
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get cars by params", notes = "Get cars by params", response = Car.class, responseContainer = "LIST")
+    public Collection<Car> getCarsByParams(@DefaultValue("0") @QueryParam("minPrice") int minPrice,@DefaultValue("0") @QueryParam("maxPrice") int maxPrice) throws Exception {
+        if(minPrice == 0 && maxPrice == 0) {
+            throw new UserException("Car not found", "Samochód nie został znaleziony", "http://docu.pl/errors/user-not-found");
+        } else {
+            return getDatabase().getCarsByQueryParams(minPrice, maxPrice);
+        }
+    }
+
+
     @Path("/{carId}")
     @ApiOperation(value = "Get car by id", notes = "[note]Get car by id", response = Car.class)
     @GET
@@ -50,11 +62,9 @@ public abstract class CarsResource {
         if (carId.equals("db")) {
             throw new Exception("Database error");
         }
-
         if (car == null) {
             throw new UserException("Car not found", "Samochód nie został znaleziony", "http://docu.pl/errors/user-not-found");
         }
-
         return car;
     }
 

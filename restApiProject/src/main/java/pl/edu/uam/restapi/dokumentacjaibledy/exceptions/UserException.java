@@ -19,4 +19,5 @@ public class UserException extends WebApplicationException {
     private static ExceptionMessage createExceptionMessage(String message, String userMessage, String info) {
         return new ExceptionMessage(message, userMessage, info);
     }
+
 }

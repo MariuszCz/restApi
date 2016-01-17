@@ -1,6 +1,7 @@
 package pl.edu.uam.restapi.storage.database;
 
 import com.google.common.collect.Lists;
+
 import pl.edu.uam.restapi.storage.entity.AuctionEntity;
 import pl.edu.uam.restapi.storage.entity.CarEntity;
 import pl.edu.uam.restapi.storage.entity.UserEntity;
@@ -12,6 +13,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Root;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -204,6 +208,27 @@ public class MysqlDB implements UserDatabase, CarDatabase, AuctionDatabase {
     }
 
     @Override
+    public Collection<Car> getCarsByQueryParams(int minPrice, int maxPrice) {
+
+        Query query;
+        List<Car> list = Collections.emptyList();
+
+            query = getEntityManager().createNamedQuery("cars.findByParams");
+            query.setParameter("minPrice", minPrice);
+            query.setParameter("maxPrice", maxPrice);
+            List<CarEntity> resultList = query.getResultList();
+            if (resultList != null && !resultList.isEmpty()) {
+                list = Lists.newArrayListWithCapacity(resultList.size());
+
+                for (CarEntity cars : resultList) {
+                    list.add(buildCarResponse(cars));
+                }
+        }
+        return  list;
+    }
+
+
+    @Override
     public Car updateCar(String sid, Car car) {
         Long id = getId(sid);
 
@@ -318,6 +343,19 @@ public class MysqlDB implements UserDatabase, CarDatabase, AuctionDatabase {
     }
     ///// ******** AUCTIONS ****************
 
+    @Override
+    public Auction getAuctionsByQueryParams(String mark, String model, String userId) {
+       // Long id = getId(sid);
+
+        AuctionEntity auctionEntity = getEntityManager()
+                .find(AuctionEntity.class, mark );
+
+        if (auctionEntity != null) {
+            return buildAuctionResponse(auctionEntity);
+        }
+
+        return null;
+    }
 
     @Override
     public Auction getAuction(String sid) {

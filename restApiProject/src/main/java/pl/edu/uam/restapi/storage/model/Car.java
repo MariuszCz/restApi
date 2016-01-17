@@ -13,14 +13,14 @@ public class Car {
     private String fuelType;
     private String colour;
     private String vinNumber;
-    private String price;
+    private int price;
 
 
     public Car() {
     }
 
     public Car(String id, String make, String model, String year, String engine,
-               String fuelType, String colour, String vinNumber, String price) {
+               String fuelType, String colour, String vinNumber, int price) {
         this.id = id;
         this.make = make;
         this.model = model;
@@ -73,7 +73,7 @@ public class Car {
     }
 
     @ApiModelProperty(value = "Car price", required = true)
-    public String getPrice() {
+    public int getPrice() {
         return price;
     }
 
