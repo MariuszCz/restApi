@@ -2,6 +2,7 @@ package pl.edu.uam.restapi.storage.database;
 
 import com.google.common.collect.Lists;
 
+import pl.edu.uam.restapi.dokumentacjaibledy.exceptions.UserException;
 import pl.edu.uam.restapi.storage.entity.AuctionEntity;
 import pl.edu.uam.restapi.storage.entity.CarEntity;
 import pl.edu.uam.restapi.storage.entity.UserEntity;
@@ -208,7 +209,7 @@ public class MysqlDB implements UserDatabase, CarDatabase, AuctionDatabase {
     }
 
     @Override
-    public Collection<Car> getCarsByQueryParams(int minPrice, int maxPrice) {
+    public Collection<Car> getCarsByQueryParams(int minPrice, int maxPrice) throws Exception{
 
         Query query;
         List<Car> list = Collections.emptyList();
@@ -224,6 +225,10 @@ public class MysqlDB implements UserDatabase, CarDatabase, AuctionDatabase {
                     list.add(buildCarResponse(cars));
                 }
         }
+        else
+            {
+                throw new UserException("Car not found", "Samochód nie został znaleziony", "http://docu.pl/errors/user-not-found");
+            }
         return  list;
     }
 

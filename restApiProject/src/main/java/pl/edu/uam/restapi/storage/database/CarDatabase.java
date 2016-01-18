@@ -14,7 +14,7 @@ public interface CarDatabase {
 
     Car deleteCar(String id);
 
-    Collection<Car> getCarsByQueryParams(int minPrice, int maxPrice);
+    Collection<Car> getCarsByQueryParams(int minPrice, int maxPrice) throws Exception;
 
     Collection<Car> getCars();
 }

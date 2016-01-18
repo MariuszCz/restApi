@@ -55,7 +55,7 @@ public abstract class CarsResource {
     @Path("/{carId}")
     @ApiOperation(value = "Get car by id", notes = "[note]Get car by id", response = Car.class)
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Car getCar(@PathParam("carId") String carId) throws Exception {
         Car car = getDatabase().getCar(carId);
 
